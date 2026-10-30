@@ -280,7 +280,7 @@ function AdminDashboard() {
 
       <div className="admin-layout-container">
        
-{/* Dashboard  */}
+{/* Dashboard Summary */}
 <section className="admin-kpi-grid">
   <div className="kpi-card">
     <span className="kpi-sub">Total Orders</span>
@@ -322,7 +322,7 @@ function AdminDashboard() {
           </div>
         )}
 
-        {/*  Orders Management */}
+        {/* Tab 1: Orders Management */}
         {activeTab === 'orders' && (
           <section className="admin-orders-pane">
             {/* Filter Toolbar */}
@@ -463,7 +463,7 @@ function AdminDashboard() {
           </section>
         )}
 
-        {/* Product & Mix Catalogue Management */}
+        {/* Tab 2: Product & Mix Catalogue Management */}
         {activeTab === 'products' && (
           <section className="admin-products-pane">
             {/* Add / Edit Product Form */}

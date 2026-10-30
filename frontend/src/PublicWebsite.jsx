@@ -489,7 +489,7 @@ function PublicWebsite() {
     <div className="app-container">
     
       
-      /* Main  Header */
+      {/* Main  Header */}
       <header className="navbar">
         <a href="#home" className="brand">
           <div className="brand-logo-mark">
@@ -501,7 +501,7 @@ function PublicWebsite() {
           </div>
         </a>
 
-        /* Desktop Navigation */
+        {/* Desktop Navigation */}
         <nav className={`nav-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
           <a href="#home" onClick={() => setMobileMenuOpen(false)}>Home</a>
           <a href="#about" onClick={() => setMobileMenuOpen(false)}>About Us</a>
@@ -537,7 +537,7 @@ function PublicWebsite() {
           </div>
         </nav>
 
-        /* Desktop Header Actions */
+        {/* Desktop Header Actions */}
         <div className="nav-desktop-actions">
           
 
@@ -558,7 +558,7 @@ function PublicWebsite() {
             Admin 🔒
           </button>
 
-          /* Mobile hamburger button */
+          {/* Mobile hamburger button */}
           <button
             type="button"
             className={`mobile-menu-toggle ${mobileMenuOpen ? 'is-active' : ''}`}
@@ -573,7 +573,7 @@ function PublicWebsite() {
       </header>
 
       <main>
-        /* Hero Section */
+        {/* Hero Section */}
         <section className="hero-section" id="home">
           <div className="hero-grid">
             <div className="hero-content">
@@ -609,7 +609,7 @@ function PublicWebsite() {
                 </a>
               </div>
 
-              /* Plant Highlights */
+              {/* Plant Highlights */}
               <div className="hero-metrics-strip">
                 <div className="metric-item">
                   <strong>2005</strong>
@@ -638,7 +638,7 @@ function PublicWebsite() {
               </div>
             </div>
 
-            /* Hero Visual Card: */
+           { /* Hero Visual Card: */}
             <div className="hero-visual-card">
               <div className="hero-visual-image-wrapper">
                 <img
@@ -686,7 +686,7 @@ function PublicWebsite() {
           </div>
         </section>
 
-        /*  About Us */
+        {/*  About Us */}
         <section className="about-section" id="about">
           <div className="section-head text-center">
             <span className="section-eyebrow">ABOUT BHAGYALAXMI RMC</span>
@@ -770,7 +770,7 @@ function PublicWebsite() {
           </div>
         </section>
 
-        /*   Advantages  */
+        {/*   Advantages  */}
         <section className="advantages-section" id="advantages">
           <div className="section-head text-center">
             <span className="section-eyebrow">KEY ADVANTAGES</span>
@@ -833,7 +833,7 @@ function PublicWebsite() {
           </div>
         </section>
 
-        /* Section 4: Concrete Volume & Brass Calculator */
+        {/* Section 4: Concrete Volume & Brass Calculator */}
         <section className="calculator-section" id="calculator">
           <div className="section-head text-center">
             <span className="section-eyebrow">CONTRACTOR'S TOOLKIT</span>
@@ -848,7 +848,7 @@ function PublicWebsite() {
           </div>
         </section>
 
-        /* Concrete Products & Specialized Mixes  */
+        {/* Concrete Products & Specialized Mixes  */}
         <section className="products-catalogue-section" id="products">
           <div className="catalogue-head">
             <div>
@@ -864,7 +864,7 @@ function PublicWebsite() {
             </div>
           </div>
 
-          /* Filter Toolbar */
+          {/* Filter Toolbar */}
           <div className="catalogue-toolbar-row">
             <div className="filter-pill-group" role="tablist">
               <button
@@ -925,7 +925,7 @@ function PublicWebsite() {
             </div>
           </div>
 
-          /* Products Grid */
+          {/* Products Grid */}
           <div className="products-grid">
             {filteredProducts.map((prod) => (
               <article className="product-card" key={prod.id}>
@@ -1025,7 +1025,7 @@ function PublicWebsite() {
 
        
         
-        /*  Quality Testing  */
+        {/*  Quality Testing  */}
         <section className="quality-section" id="quality">
           <div className="section-head text-center">
             <span className="section-eyebrow">QUALITY TESTING & ASSURANCE</span>
@@ -1071,7 +1071,7 @@ function PublicWebsite() {
             </div>
           </div>
 
-          /* 4 Step Quality Workflow */
+          {/* 4 Step Quality Workflow */}
           <div className="quality-steps-grid">
             <div className="quality-step-card">
               <div className="step-num">01</div>
@@ -1099,7 +1099,7 @@ function PublicWebsite() {
           </div>
         </section>
 
-        /* Real Projects  */
+        {/* Real Projects  */}
         <section className="projects-section" id="projects">
           <div className="section-head text-center">
             <span className="section-eyebrow">PROVEN TRACK RECORD</span>
@@ -1132,7 +1132,7 @@ function PublicWebsite() {
             ))}
           </div>
 
-          /* Project Image  */
+          {/* Project Image  */}
           {activeProjectModal && (
             <div className="image-modal-backdrop" onClick={() => setActiveProjectModal(null)}>
               <div className="image-modal-dialog" onClick={(e) => e.stopPropagation()}>
@@ -1171,7 +1171,7 @@ function PublicWebsite() {
           )}
         </section>
 
-        /*  Plant Location  */
+        {/*  Plant Location  */}
         <section className="contact-dispatch-section" id="contact">
           <div className="contact-grid">
             <div className="contact-info-pane">
@@ -1261,7 +1261,7 @@ function PublicWebsite() {
               </div>
             </div>
 
-            /* Quick Action  */
+            {/* Quick Action  */}
             <div className="contact-action-pane">
               <div className="contact-callout-box">
                 <span className="badge badge-accent">INSTANT DISPATCH ACTION</span>
@@ -1300,7 +1300,7 @@ function PublicWebsite() {
         </section>
       </main>
 
-      /*  Footer */
+      {/*  Footer */}
       <footer className="footer-industrial">
         <div className="footer-top-grid">
           <div className="footer-brand-col">
