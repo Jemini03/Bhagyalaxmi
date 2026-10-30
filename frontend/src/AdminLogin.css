@@ -1,0 +1,185 @@
+/* Bhagyalaxmi RMC - Admin Login Stylesheet */
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 60%, #080c14 100%);
+  color: #f8fafc;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-card-container {
+  width: 100%;
+  max-width: 460px;
+}
+
+.admin-login-card {
+  width: 100%;
+  padding: 36px 32px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(249, 115, 22, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.login-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.eyebrow-accent {
+  display: block;
+  color: #f97316;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.admin-login-card h1 {
+  margin: 2px 0 0;
+  color: #ffffff;
+  font-family: 'Manrope', 'DM Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.login-subtext {
+  margin: 12px 0 24px;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admin-login-error {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border-left: 4px solid #ef4444;
+  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  font-size: 13px;
+}
+
+.admin-login-card .form-group {
+  margin-bottom: 18px;
+}
+
+.admin-login-card label {
+  display: block;
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.password-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-toggle-pwd {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 200ms ease;
+}
+
+.btn-toggle-pwd:hover {
+  color: #f97316;
+}
+
+.admin-login-card input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 14px;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.admin-login-card input:focus {
+  outline: none;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25);
+}
+
+.login-helper-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  margin: 20px 0;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  border-radius: 8px;
+  background: rgba(249, 115, 22, 0.08);
+  color: #fed7aa;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.login-helper-box code {
+  padding: 2px 5px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  color: #ffedd5;
+  font-weight: 700;
+}
+
+.btn-login-submit {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-login-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.45);
+}
+
+.btn-login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.admin-back-button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.admin-back-button:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
