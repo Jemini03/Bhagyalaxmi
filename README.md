@@ -72,5 +72,4 @@ Create the required MySQL database and tables.
 
 Use the SQL schema and setup instructions provided with the project. Configure the database connection using environment variables.
 
-Never publish actual database passwords or credentials.
 
