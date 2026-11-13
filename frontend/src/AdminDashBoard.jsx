@@ -31,17 +31,33 @@ function AdminDashboard() {
   const [productMessage, setProductMessage] = useState('');
   const [productSubmitting, setProductSubmitting] = useState(false);
 
+  // Auth header helper supporting Bearer token for cross-origin deployments
+  const getAuthHeaders = (extraHeaders = {}) => {
+    const token = localStorage.getItem('adminToken');
+    return {
+      ...extraHeaders,
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    };
+  };
+
+  const clearAuthAndRedirect = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    navigate('/admin/login');
+  };
+
   // Initial load
   useEffect(() => {
     async function initDashboard() {
       try {
         // First verify authentication
         const meRes = await fetch(`${API_BASE_URL}/api/admin/me`, {
-          credentials: 'include'
+          credentials: 'include',
+          headers: getAuthHeaders()
         });
 
         if (meRes.status === 401) {
-          navigate('/admin/login');
+          clearAuthAndRedirect();
           return;
         }
 
@@ -65,12 +81,18 @@ function AdminDashboard() {
   const refreshData = async () => {
     try {
       const [ordersRes, productsRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/admin/orders`, { credentials: 'include' }),
-        fetch(`${API_BASE_URL}/api/admin/products`, { credentials: 'include' })
+        fetch(`${API_BASE_URL}/api/admin/orders`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        }),
+        fetch(`${API_BASE_URL}/api/admin/products`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        })
       ]);
 
       if (ordersRes.status === 401 || productsRes.status === 401) {
-        navigate('/admin/login');
+        clearAuthAndRedirect();
         return;
       }
 
@@ -93,12 +115,13 @@ function AdminDashboard() {
     try {
       await fetch(`${API_BASE_URL}/api/admin/logout`, {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
+        headers: getAuthHeaders()
       });
     } catch (e) {
       console.warn('Logout network error:', e);
     } finally {
-      navigate('/admin/login');
+      clearAuthAndRedirect();
     }
   };
 
@@ -110,9 +133,9 @@ function AdminDashboard() {
       const response = await fetch(`${API_BASE_URL}/api/admin/orders/${orderId}/status`, {
         method: 'PATCH',
         credentials: 'include',
-        headers: {
+        headers: getAuthHeaders({
           'Content-Type': 'application/json'
-        },
+        }),
         body: JSON.stringify({ status: newStatus })
       });
 
@@ -144,7 +167,7 @@ function AdminDashboard() {
       const res = await fetch(`${API_BASE_URL}/api/admin/products/${product.id}/availability`, {
         method: 'PATCH',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ is_available: nextVal })
       });
       const data = await res.json();
@@ -173,7 +196,7 @@ function AdminDashboard() {
       const res = await fetch(url, {
         method: isEditing ? 'PUT' : 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           ...productForm,
           price: productForm.price === '' ? null : Number(productForm.price)

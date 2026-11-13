@@ -32,6 +32,13 @@ function AdminLogin() {
         throw new Error(data.message || 'Login failed. Please verify credentials.');
       }
 
+      if (data.token) {
+        localStorage.setItem('adminToken', data.token);
+      }
+      if (data.admin) {
+        localStorage.setItem('adminUser', JSON.stringify(data.admin));
+      }
+
       navigate('/admin/dashboard');
     } catch (err) {
       const msg = err.message || '';

@@ -2,6 +2,7 @@ const db = require('./db');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -10,7 +11,9 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(cors({
   origin: (origin, callback) => callback(null, true),
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -34,16 +37,74 @@ app.use(session({
   }
 }));
 
-// Middleware to protect admin routes
+// Token helpers for cross-origin / cross-domain admin authentication
+function createAdminToken(admin) {
+  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({
+    id: admin.id,
+    username: admin.username,
+    exp: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days expiration
+  })).toString('base64url');
+  const signature = crypto
+    .createHmac('sha256', process.env.SESSION_SECRET || 'rmc_fallback_secret_key')
+    .update(`${header}.${payload}`)
+    .digest('base64url');
+  return `${header}.${payload}.${signature}`;
+}
+
+function verifyAdminToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  const [header, payload, signature] = parts;
+
+  try {
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.SESSION_SECRET || 'rmc_fallback_secret_key')
+      .update(`${header}.${payload}`)
+      .digest('base64url');
+
+    const sigBuffer = Buffer.from(signature);
+    const expectedSigBuffer = Buffer.from(expectedSignature);
+    if (sigBuffer.length !== expectedSigBuffer.length) return null;
+    if (!crypto.timingSafeEqual(sigBuffer, expectedSigBuffer)) return null;
+
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    if (data.exp && Date.now() > data.exp) {
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// Middleware to protect admin routes (supports both Bearer token & session cookie)
 function requireAdmin(req, res, next) {
-  if (!req.session || !req.session.adminId) {
-    return res.status(401).json({
-      success: false,
-      message: 'Authentication required. Please log in.'
-    });
+  // 1. Check Authorization header: Bearer <token>
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    const verified = verifyAdminToken(token);
+    if (verified) {
+      req.admin = verified;
+      return next();
+    }
   }
 
-  next();
+  // 2. Fallback to session cookie
+  if (req.session && req.session.adminId) {
+    req.admin = {
+      id: req.session.adminId,
+      username: req.session.adminUsername
+    };
+    return next();
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: 'Authentication required. Please log in.'
+  });
 }
 
 
@@ -101,39 +162,28 @@ app.post('/api/admin/login', async (req, res) => {
       });
     }
 
-    // Regenerate the session after successful authentication
-    req.session.regenerate((error) => {
-      if (error) {
-        console.error('Session regeneration failed:', error.message);
+    // Generate auth token for cross-domain SPA authorization
+    const token = createAdminToken(admin);
 
-        return res.status(500).json({
-          success: false,
-          message: 'Unable to start your session.'
-        });
-      }
-
-      req.session.adminId = admin.id;
-      req.session.adminUsername = admin.username;
-
-      req.session.save((saveError) => {
-        if (saveError) {
-          console.error('Session save failed:', saveError.message);
-
-          return res.status(500).json({
-            success: false,
-            message: 'Unable to save your session.'
-          });
+    // Also persist session cookie if session is active
+    if (req.session) {
+      req.session.regenerate((error) => {
+        if (!error) {
+          req.session.adminId = admin.id;
+          req.session.adminUsername = admin.username;
+          req.session.save(() => {});
         }
-
-        return res.json({
-          success: true,
-          message: 'Login successful.',
-          admin: {
-            id: admin.id,
-            username: admin.username
-          }
-        });
       });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Login successful.',
+      token,
+      admin: {
+        id: admin.id,
+        username: admin.username
+      }
     });
   } catch (error) {
     console.error('Admin login failed:', error.message);
@@ -149,33 +199,26 @@ app.get('/api/admin/me', requireAdmin, (req, res) => {
   res.json({
     success: true,
     admin: {
-      id: req.session.adminId,
-      username: req.session.adminUsername
+      id: req.admin ? req.admin.id : req.session?.adminId,
+      username: req.admin ? req.admin.username : req.session?.adminUsername
     }
   });
 });
 // Admin logout
-app.post('/api/admin/logout', requireAdmin, (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      console.error('Admin logout failed:', error.message);
+app.post('/api/admin/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(() => {});
+  }
 
-      return res.status(500).json({
-        success: false,
-        message: 'Unable to log out.'
-      });
-    }
+  res.clearCookie('rmc_admin_session', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
+  });
 
-    res.clearCookie('rmc_admin_session', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax'
-    });
-
-    return res.json({
-      success: true,
-      message: 'Logged out successfully.'
-    });
+  return res.json({
+    success: true,
+    message: 'Logged out successfully.'
   });
 });
 app.get('/api/products', async (req, res) => {
