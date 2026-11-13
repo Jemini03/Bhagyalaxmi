@@ -7,6 +7,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<PublicWebsite />} />
+      <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+      <Route path="/login" element={<Navigate to="/admin/login" replace />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin/dashboard"

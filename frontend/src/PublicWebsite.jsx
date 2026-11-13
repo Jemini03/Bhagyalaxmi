@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from './config';
 import ConcreteCalculator from './ConcreteCalculator.jsx';
 import OrderModal from './OrderModal.jsx';
 import './App.css';
@@ -396,7 +397,7 @@ function PublicWebsite() {
     let isMounted = true;
     async function fetchProducts() {
       try {
-        const response = await fetch('http://localhost:5001/api/products');
+        const response = await fetch(`${API_BASE_URL}/api/products`);
         if (response.ok) {
           const data = await response.json();
           if (isMounted && Array.isArray(data) && data.length > 0) {
@@ -524,16 +525,13 @@ function PublicWebsite() {
             >
               Book Pour Now
             </button>
-            <button
-              type="button"
+            <Link
+              to="/admin/login"
               className="btn-admin-link"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate('/admin/login');
-              }}
+              onClick={() => setMobileMenuOpen(false)}
             >
               Plant Admin 🔒
-            </button>
+            </Link>
           </div>
         </nav>
 
@@ -549,14 +547,13 @@ function PublicWebsite() {
             <span>Book a Pour ↗</span>
           </button>
 
-          <button
-            type="button"
+          <Link
+            to="/admin/login"
             className="btn-header-admin"
-            onClick={() => navigate('/admin/login')}
             title="Dispatch & Admin Login"
           >
             Admin 🔒
-          </button>
+          </Link>
 
           {/* Mobile hamburger button */}
           <button
@@ -1286,13 +1283,12 @@ function PublicWebsite() {
 
                 <div className="admin-access-note">
                   <span>Plant Officer or Dispatch Manager?</span>
-                  <button
-                    type="button"
+                  <Link
+                    to="/admin/login"
                     className="btn-admin-text"
-                    onClick={() => navigate('/admin/login')}
                   >
                     Sign into Plant Dashboard →
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -1358,13 +1354,12 @@ function PublicWebsite() {
               <li><a href="#projects">Our Completed Projects</a></li>
               <li><a href="/Bhagyalaxmi-RMC-Brochure.pdf" target="_blank" rel="noopener noreferrer">Download Brochure (PDF)</a></li>
               <li>
-                <button
-                  type="button"
+                <Link
+                  to="/admin/login"
                   className="footer-admin-btn"
-                  onClick={() => navigate('/admin/login')}
                 >
                   Admin Operations Portal 🔒
-                </button>
+                </Link>
               </li>
             </ul>
           </div>

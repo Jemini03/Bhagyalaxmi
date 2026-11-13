@@ -15,16 +15,22 @@ app.use(cors({
 
 app.use(express.json());
 
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 app.use(session({
   name: 'rmc_admin_session',
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'rmc_fallback_secret_key',
   resave: false,
   saveUninitialized: false,
+  proxy: isProduction,
   cookie: {
     httpOnly: true,
-    secure: false, 
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 1000 
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 60 * 60 * 1000
   }
 }));
 

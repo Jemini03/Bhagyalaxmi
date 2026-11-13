@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from './config';
 import './AdminLogin.css';
 
 function AdminLogin() {
@@ -16,7 +17,7 @@ function AdminLogin() {
     setSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5001/api/admin/login', {
+      const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -33,7 +34,14 @@ function AdminLogin() {
 
       navigate('/admin/dashboard');
     } catch (err) {
-      setError(err.message || 'Unable to log in. Please check backend connection.');
+      const msg = err.message || '';
+      if (msg.toLowerCase().includes('load failed') || msg.toLowerCase().includes('failed to fetch')) {
+        setError(
+          `Unable to reach backend API at ${API_BASE_URL}. If deployed on Vercel, ensure your backend server URL is configured in VITE_API_URL.`
+        );
+      } else {
+        setError(msg || 'Unable to log in. Please check backend connection.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -59,7 +67,27 @@ function AdminLogin() {
 
           {error && (
             <div className="admin-login-error" role="alert">
-              <strong>Access Denied:</strong> {error}
+              {error.toLowerCase().includes('backend') ||
+              error.toLowerCase().includes('failed to fetch') ||
+              error.toLowerCase().includes('network') ||
+              error.toLowerCase().includes('connect') ? (
+                <>
+                  <strong>Server Offline:</strong> {error}
+                </>
+              ) : error.toLowerCase().includes('right now') ||
+                error.toLowerCase().includes('database') ? (
+                <>
+                  <strong>Database Error:</strong> {error} (Check if MySQL is running)
+                </>
+              ) : error.toLowerCase().includes('invalid') ? (
+                <>
+                  <strong>Incorrect Credentials:</strong> {error}
+                </>
+              ) : (
+                <>
+                  <strong>Login Error:</strong> {error}
+                </>
+              )}
             </div>
           )}
 

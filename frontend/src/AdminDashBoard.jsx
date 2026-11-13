@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from './config';
 import './App.css';
 
 function AdminDashboard() {
@@ -35,7 +36,7 @@ function AdminDashboard() {
     async function initDashboard() {
       try {
         // First verify authentication
-        const meRes = await fetch('http://localhost:5001/api/admin/me', {
+        const meRes = await fetch(`${API_BASE_URL}/api/admin/me`, {
           credentials: 'include'
         });
 
@@ -52,7 +53,7 @@ function AdminDashboard() {
         await refreshData();
       } catch (err) {
         console.error('Dashboard init error:', err);
-        setError('Unable to reach backend server. Please verify backend is running on port 5001.');
+        setError(`Unable to reach backend server at ${API_BASE_URL}.`);
       } finally {
         setLoading(false);
       }
@@ -64,8 +65,8 @@ function AdminDashboard() {
   const refreshData = async () => {
     try {
       const [ordersRes, productsRes] = await Promise.all([
-        fetch('http://localhost:5001/api/admin/orders', { credentials: 'include' }),
-        fetch('http://localhost:5001/api/admin/products', { credentials: 'include' })
+        fetch(`${API_BASE_URL}/api/admin/orders`, { credentials: 'include' }),
+        fetch(`${API_BASE_URL}/api/admin/products`, { credentials: 'include' })
       ]);
 
       if (ordersRes.status === 401 || productsRes.status === 401) {
@@ -90,7 +91,7 @@ function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5001/api/admin/logout', {
+      await fetch(`${API_BASE_URL}/api/admin/logout`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -106,7 +107,7 @@ function AdminDashboard() {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:5001/api/admin/orders/${orderId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/api/admin/orders/${orderId}/status`, {
         method: 'PATCH',
         credentials: 'include',
         headers: {
@@ -140,7 +141,7 @@ function AdminDashboard() {
   const toggleProductAvailability = async (product) => {
     const nextVal = !Boolean(product.is_available);
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/products/${product.id}/availability`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/${product.id}/availability`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -166,8 +167,8 @@ function AdminDashboard() {
     try {
       const isEditing = editingProductId !== null;
       const url = isEditing
-        ? `http://localhost:5001/api/admin/products/${editingProductId}`
-        : 'http://localhost:5001/api/admin/products';
+        ? `${API_BASE_URL}/api/admin/products/${editingProductId}`
+        : `${API_BASE_URL}/api/admin/products`;
 
       const res = await fetch(url, {
         method: isEditing ? 'PUT' : 'POST',
